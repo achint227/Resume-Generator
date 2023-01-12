@@ -22,7 +22,7 @@ def build(filename,js):
                 elif "Skill" in l:
                     f.write(l)
                     f.write(getSkillLatex(js["skillset"]))
-                elif "Internship" in l:
+                elif "Experience" in l:
                     f.write(l)
                     f.write(getExperience(js["experience"]))
                 elif "Projects" in l:
