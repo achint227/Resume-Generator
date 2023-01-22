@@ -2,15 +2,6 @@ from json import load
 from os import chdir, system
 from load_sections import load_education, load_experiences, load_projects
 
-# import pymongo
-# client = pymongo.MongoClient(
-#     "mongodb+srv://achint94:vX29fZeb7wIob14Q@clusterfilename.hwe1pha.mongodb.net/?retryWrites=true&w=majority"
-# )
-
-
-# collection = client.Resume.Resume
-# for doc in collection.find({}):
-#     print(doc)
 
 with open("user.json", "r") as f:
     user = load(f)
@@ -27,7 +18,7 @@ projects = new_section("Projects", load_projects(user["projects"]))
 
 summary = (
     f"""\\section{{Summary}}
-\\text{{{user["basic_info"].get("summary")}}}"""
+{{{user["basic_info"].get("summary")}}}"""
     if user["basic_info"].get("summary")
     else ""
 )
