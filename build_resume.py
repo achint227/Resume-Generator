@@ -1,10 +1,37 @@
+import re
 from json import load
 from os import chdir, system
+
 from load_sections import load_education, load_experiences, load_projects
+
+
+def to_latex_escape(string):
+    string = re.sub(r"([&%$#_{}])", r"\\\1", string)
+    return string
+
+
+def apply_latex_escape(d):
+    for key, value in d.items():
+        if isinstance(value, str):
+            d[key] = to_latex_escape(value)
+        elif isinstance(value, dict):
+            apply_latex_escape(value)
+        elif isinstance(value, list):
+            d[key] = [
+                apply_latex_escape(i)
+                if isinstance(i, (dict, list))
+                else to_latex_escape(i)
+                if isinstance(i, str)
+                else i
+                for i in value
+            ]
+    return d
 
 
 with open("user.json", "r") as f:
     user = load(f)
+
+user = apply_latex_escape(user)
 
 
 def new_section(section_name, content):
