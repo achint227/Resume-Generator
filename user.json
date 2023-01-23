@@ -38,7 +38,7 @@
                     "title": "Financial Spreading Automation",
                     "details": [
                         "Implemented algorithm to extract 400 relevant fields from documents of up to 300 pages",
-                        "Devised a machine learning model to classify extracted fields into over 20 classes and 40 subclasses using data from1000 documents and 400000 data points with an accuracy of 98.47%",
+                        "Devised a machine learning model to classify extracted fields into over 20 classes and 40 subclasses using data from 1000 documents and 400000 data points with an accuracy of 98.47%",
                         "Rebuilt the user queuing module that resulted in an increase of 33% in eﬃciency",
                         "Tested the application and performed root cause analysis reducing the error rate by 27%"
                     ]
