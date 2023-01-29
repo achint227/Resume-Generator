@@ -1,15 +1,21 @@
+import re
+
+
+def make_bold(string, bold_words):
+    if not bold_words:
+        return string
+    for word in bold_words:
+        string = re.sub(r"\b" + word + r"\b", r"\\textbf{" + word + "}", string)
+    return string
+
+
 def bullets_from_list(items, end=True, highlight=None):
     if not items:
         return ""
     res = "\\begin{itemize}\n"
     for item in items:
-        text = item.split()
-        text = [
-            (f"\\textbf{{{word}}}" if (highlight and word in highlight) else word)
-            for word in text
-        ]
-        text = " ".join(text)
-        res += f"\\item {item}"
+        text = make_bold(item, highlight)
+        res += f"\\item {text}"
     if end:
         res += "\n\\end{itemize}"
     return res
@@ -21,7 +27,7 @@ def create_details(project):
     rs = "\\begin{itemize}\n"
     for p in project:
         rs += f"""
-\\item \\textbf{{{p['title']}}}
+\\item \\textbf{{{p['title']}}} {{\\hfill {{{', '.join(p['tools'])}}}}}
 {bullets_from_list(p['details'])}
 """
     return rs + "\n\\end{itemize}"
