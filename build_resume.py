@@ -28,68 +28,71 @@ def apply_latex_escape(d):
     return d
 
 
-with open("user.json", "r") as f:
-    user = load(f)
-
-user = apply_latex_escape(user)
-
-
 def new_section(section_name, content):
     return f"\\section{{{section_name}}}\n{content}"
 
 
-education = new_section("Education", load_education(user["education"]))
+def generate_resume_content(user):
+    with open("user.json", "r") as f:
+        user = load(f)
 
-experience = new_section("Experience", load_experiences(user["experiences"]))
-projects = new_section("Projects", load_projects(user["projects"]))
+    user = apply_latex_escape(user)
 
-summary = (
-    f"""\\section{{Summary}}
-{{{user["basic_info"].get("summary")}}}"""
-    if user["basic_info"].get("summary")
-    else ""
-)
-homepage = (
-    f"\\homepage[{user['basic_info']['homepage']}]{{http://{user['basic_info']['homepage']}}}"
-    if user["basic_info"].get("homepage")
-    else ""
-)
-section1, section2, section3 = (
-    projects,
-    education,
-    experience,
-)
-RESUME = f"""
-% !TEX program = xelatex
+    education = new_section("Education", load_education(user["education"]))
 
-\\documentclass{{resume}}
+    experience = new_section("Experience", load_experiences(user["experiences"]))
+    projects = new_section("Projects", load_projects(user["projects"]))
 
-\\begin{{document}}
-\\pagenumbering{{gobble}} % suppress displaying page number
+    summary = (
+        f"""\\section{{Summary}}
+    {{{user["basic_info"].get("summary")}}}"""
+        if user["basic_info"].get("summary")
+        else ""
+    )
+    homepage = (
+        f"\\homepage[{user['basic_info']['homepage']}]{{http://{user['basic_info']['homepage']}}}"
+        if user["basic_info"].get("homepage")
+        else ""
+    )
+    section1, section2, section3 = (
+        experience,
+        projects,
+        education,
+    )
+    RESUME = f"""
+    % !TEX program = xelatex
 
-\\name{{{user["name"]}}}
+    \\documentclass{{resume}}
 
-\\basicInfo{{
-  \\email{{{user["basic_info"]["email"]}}} 
-  \\phone{{{user["basic_info"]["phone"]}}} 
-  \\linkedin[{user["basic_info"]["linkedin"]}]{{https://www.linkedin.com/in/{user["basic_info"]["linkedin"]}}}
-  \\github[{user["basic_info"]["github"]}]{{https://github.com/{user["basic_info"]["github"]}}}
-  {homepage}
-}}
-{summary}
+    \\begin{{document}}
+    \\pagenumbering{{gobble}} % suppress displaying page number
 
-{section1}
+    \\name{{{user["name"]}}}
 
-{section2}
+    \\basicInfo{{
+    \\email{{{user["basic_info"]["email"]}}} 
+    \\phone{{{user["basic_info"]["phone"]}}} 
+    \\linkedin[{user["basic_info"]["linkedin"]}]{{https://www.linkedin.com/in/{user["basic_info"]["linkedin"]}}}
+    \\github[{user["basic_info"]["github"]}]{{https://github.com/{user["basic_info"]["github"]}}}
+    {homepage}
+    }}
+    {summary}
 
-{section3}
+    {section1}
 
-\\end{{document}}
+    {section2}
 
-"""
+    {section3}
+
+    \\end{{document}}
+
+    """
+    return RESUME
+
 
 if __name__ == "__main__":
-    filename = "Resume.tex"
+    RESUME = generate_resume_content("user.json")
+    filename = "Resume1.tex"
     with open(filename, "w") as output_tex:
         output_tex.write(RESUME)
     system(f"mv {filename} template/")
