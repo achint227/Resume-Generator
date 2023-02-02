@@ -1,12 +1,13 @@
 {
     "name": "Achint Bhat",
     "basic_info": {
+        "address": "Tempe, AZ",
         "email": "abhat29@asu.edu",
         "phone": 6023348839,
         "linkedin": "achint94",
         "github": "achint227",
         "homepage": "",
-        "summary": "Software Engineer with 4 years of experience in developing and maintaining software applications. Proficient in various programming languages including Python, Java and JavaScript. Strong experience with Agile development methodologies and a proven track record of delivering high-quality software on time and within budget. Strong analytical and problem-solving skills, with a commitment to continuous learning and improvement."
+        "summary": "Software Engineer with over 3 years of experience in developing and maintaining software applications. Proficient in various programming languages including Python, Java and JavaScript. Strong experience with Agile development methodologies and a proven track record of delivering high-quality software on time and within budget. Strong analytical and problem-solving skills, with a commitment to continuous learning and improvement."
     },
     "education": [
         {
@@ -41,26 +42,41 @@
                         "Devised a machine learning model to classify extracted fields into over 20 classes and 40 subclasses using data from 1000 documents and 400000 data points with an accuracy of 98.47%",
                         "Rebuilt the user queuing module that resulted in an increase of 33% in eﬃciency",
                         "Tested the application and performed root cause analysis reducing the error rate by 27%"
+                    ],
+                    "tools": [
+                        "python",
+                        "machine learning",
+                        "flask",
+                        "MongoDB",
+                        "PostgreSQL",
+                        "NLP",
+                        "Kafka"
                     ]
                 },
                 {
                     "title": "Financial Process Automation Assessment",
                     "details": [
                         "Analysed 17 processes and identified automation opportunities for 9 with potential increase of 60% eﬃciency with 10% cost reductions"
-                    ]
+                    ],
+                    "tools": []
                 },
                 {
                     "title": "Clinical Trial adverse event reporting Automation",
                     "details": [
                         "Upgraded the manual entry of adverse eﬀect form data into the database by using OCR tools and Intelligent Document processing platforms reducing the turnaround time by 75%",
                         "Computed machine learning model to predict adverse eﬀect with a test accuracy of 95%"
-                    ]
+                    ],
+                    "tools": []
                 },
                 {
                     "title": "Human Resource support Automation",
                     "details": [
                         "Examined client owned proprietary framework for chatbots and mastered it withing 54 hours",
                         "Implemented Bot using said framework reducing, escalations by 45%"
+                    ],
+                    "tools": [
+                        "NLP",
+                        "Node.js"
                     ]
                 },
                 {
@@ -68,18 +84,54 @@
                     "details": [
                         "Built chatbot to automate IT support queries and operations increasing overall eﬃciency by 40%",
                         "Integrated chatbot into SharePoint website for easy access for over 4000 employees"
+                    ],
+                    "tools": [
+                        "NLP",
+                        "C#"
                     ]
                 },
                 {
                     "title": "Customer Service Automation",
                     "details": [
                         "Developed chat bot for leading Australian energy company increasing customer engagement by 80% and potential reduction of 20% in costs"
+                    ],
+                    "tools": [
+                        "NLP",
+                        "JavaScript",
+                        "HTML",
+                        "CSS"
                     ]
                 }
             ]
         }
     ],
     "projects": [
+        {
+            "title": "Bank Loans backend",
+            "description": [
+                "Backend built using Node.js to access Bank loans cloud database MongoDB Atlas using Prisma ORM by exposing CRUD based REST APIs"
+            ],
+            "tools": [
+                "Node.js",
+                "JavaScript",
+                "prisma",
+                "MongoDB"
+            ],
+            "repo": "https://github.com/achint227/redesigned-bassoon"
+        },
+        {
+            "title": "Bank Loans UI",
+            "description": [
+                "React based UI to connect to REST APIs to perform CRUD operations on Bank Loan database in MongoDB Atlas"
+            ],
+            "tools": [
+                "React",
+                "JavaScript",
+                "HTML",
+                "CSS"
+            ],
+            "repo": "https://github.com/achint227/upgraded-rotary-phone"
+        },
         {
             "title": "Containerized Sentiment Analysis",
             "description": [
@@ -89,7 +141,7 @@
                 "Docker",
                 "python",
                 "waitress",
-                "Flask",
+                "flask",
                 "NLTK"
             ],
             "repo": "https://github.com/achint227/expert-guacamole"
@@ -119,6 +171,23 @@
                 "Azure Data Studio"
             ],
             "repo": "https://github.com/achint227/silver-computing-machine"
+        },
+        {
+            "title": "Machine Learning using Java",
+            "description": [
+                "Trained classification Neural networks using deeplearning4j on various datasets, including MNIST and Iris",
+                "Trained various Classification models using the Weka library",
+                "Trained various Clustering models using the Weka library",
+                "Used Maven to manage dependecies in various projects"
+            ],
+            "tools": [
+                "Java",
+                "Maven",
+                "deeplearning4j",
+                "Mallet",
+                "Weka"
+            ],
+            "repo": "https://github.com/achint227/urban-garbanzo"
         },
         {
             "title": "Sensor Data Analysis",
