@@ -160,4 +160,5 @@ def main(user_file, filename, filter=None, new_template=False):
 
 
 if __name__ == "__main__":
-    main("user.json")
+    main("user.json","Resume1")
+    main("user.json","Resume2",new_template=True)
