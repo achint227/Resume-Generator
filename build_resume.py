@@ -158,6 +158,7 @@ def main(user_file, filename, filter=None, new_template=False):
     system(f"mv {filename}.pdf ..")
     system(f"mv {filename}.tex ..")
     system(f"rm {filename}.*")
+    chdir("..")
 
 
 if __name__ == "__main__":
