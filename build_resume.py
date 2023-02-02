@@ -148,17 +148,18 @@ def generate_resume_content(user_json, filter=None, new_template=False):
 
 def main(user_file, filename, filter=None, new_template=False):
     RESUME, template = generate_resume_content(user_file, filter, new_template)
+    filename += ".tex"
     with open(filename, "w") as output_tex:
         output_tex.write(RESUME)
     system(f"mv {filename} {template}/")
     chdir(f"{template}")
     system(f"xelatex -synctex=1 -interaction=nonstopmode {filename}")
-    filename = filename[:-4]
+    filename = filename.split(".")[0]
     system(f"mv {filename}.pdf ..")
     system(f"mv {filename}.tex ..")
     system(f"rm {filename}.*")
 
 
 if __name__ == "__main__":
-    main("user.json","Resume1")
-    main("user.json","Resume2",new_template=True)
+    main("user.json", "Resume1")
+    main("user.json", "Resume2", new_template=True)
