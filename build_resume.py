@@ -88,7 +88,7 @@ def generate_resume_content(user_json, filter=None, new_template=False):
 
 \\renewcommand{{\\acvHeaderSocialSep}}{{\\quad\\textbar\\quad}}
 
-\\name{'{'+'}{'.join([_ for _ in user.get('name').split()])+'}'}
+\\name{'{'+'}{'.join([_ for _ in user['basic_info'].get('name').split()])+'}'}
 
 \\address{{{user['basic_info'].get('address')}}}
 
@@ -123,7 +123,7 @@ def generate_resume_content(user_json, filter=None, new_template=False):
 \\begin{{document}}
 \\pagenumbering{{gobble}} % suppress displaying page number
 
-\\name{{{user["name"]}}}
+\\name{{{user["basic_info"]["name"]}}}
 
 \\basicInfo{{
 \\email{{{user["basic_info"]["email"]}}} 
