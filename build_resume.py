@@ -3,6 +3,7 @@ from json import load
 from os import chdir, system
 
 from load_sections import load_education, load_experiences, load_projects
+from load_user import find_by_name
 
 
 def to_latex_escape(string):
@@ -39,9 +40,7 @@ def new_section(section_name, content, new_template=False):
     return f"\\section{{{section_name}}}\n{content}"
 
 
-def generate_resume_content(user_json, filter=None, new_template=False):
-    with open(f"{user_json}", "r") as f:
-        user = load(f)
+def generate_resume_content(user, filter=None, new_template=False):
 
     user = apply_latex_escape(user)
 
@@ -146,8 +145,9 @@ def generate_resume_content(user_json, filter=None, new_template=False):
     return (RESUME, "template2" if new_template else "template")
 
 
-def main(user_file, filename, filter=None, new_template=False):
-    RESUME, template = generate_resume_content(user_file, filter, new_template)
+def main(user_name, filename, filter=None, new_template=False):
+    user = find_by_name(user_name)
+    RESUME, template = generate_resume_content(user, filter, new_template)
     filename += ".tex"
     with open(filename, "w") as output_tex:
         output_tex.write(RESUME)
@@ -162,5 +162,5 @@ def main(user_file, filename, filter=None, new_template=False):
 
 
 if __name__ == "__main__":
-    main("user.json", "Resume1")
-    main("user.json", "Resume2", new_template=True)
+    main("Achint Bhat", "Resume1")
+    main("Achint Bhat", "Resume2", new_template=True)
