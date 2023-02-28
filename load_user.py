@@ -14,5 +14,22 @@ db = myclient["Resume"]
 collection = db["Resume"]
 
 
+def all_resumes():
+    res = []
+    for _ in collection.find():
+        _["_id"] = str(_["_id"])
+        res.append(_)
+
+    return res
+
+
 def find_by_name(name):
     return collection.find({"basic_info.name": name})[0]
+
+
+def find_by_resume_name(name):
+    return collection.find({"name": name})[0]
+
+
+def add_resume(resume):
+    return collection.insert_one(resume)
