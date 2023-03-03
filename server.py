@@ -1,7 +1,12 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from load_user import find_by_name, add_resume, all_resumes
 
 app = Flask(__name__)
+cors = CORS(
+    app,
+    resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}},
+)
 
 
 @app.route("/resume", methods=["GET"], endpoint="f1")
