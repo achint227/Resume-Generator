@@ -38,7 +38,7 @@ def get_resume(name):
 
 @app.route("/resume", methods=["POST"])
 def add_document():
-    resume = request.json["resume"]
+    resume = request.json
     try:
         resume_id = add_resume(resume)
     except:
