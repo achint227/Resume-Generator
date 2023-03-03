@@ -145,8 +145,10 @@ def generate_resume_content(user, filter=None, new_template=False):
     return (RESUME, "template2" if new_template else "template")
 
 
-def main(user_name, filename, filter=None, new_template=False):
-    user = find_by_name(user_name)
+def main(resume_name, filename=None, filter=None, new_template=False):
+    user = find_by_name(resume_name)
+    if not filename:
+        filename=resume_name
     RESUME, template = generate_resume_content(user, filter, new_template)
     filename += ".tex"
     with open(filename, "w") as output_tex:
