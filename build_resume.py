@@ -3,7 +3,7 @@ from json import load
 from os import chdir, system
 
 from load_sections import load_education, load_experiences, load_projects
-from load_user import find_by_name
+from load_user import find_by_name, find_by_resume_name
 
 
 def to_latex_escape(string):
@@ -146,9 +146,9 @@ def generate_resume_content(user, filter=None, new_template=False):
 
 
 def main(resume_name, filename=None, filter=None, new_template=False):
-    user = find_by_name(resume_name)
+    user = find_by_resume_name(resume_name)
     if not filename:
-        filename=resume_name
+        filename = resume_name
     RESUME, template = generate_resume_content(user, filter, new_template)
     filename += ".tex"
     with open(filename, "w") as output_tex:
@@ -164,5 +164,4 @@ def main(resume_name, filename=None, filter=None, new_template=False):
 
 
 if __name__ == "__main__":
-    main("Achint Bhat", "Resume1")
-    main("Achint Bhat", "Resume2", new_template=True)
+    main("test1")
