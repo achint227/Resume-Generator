@@ -1,5 +1,7 @@
 import re
 
+from config import KEYWORDS
+
 
 def make_bold(string, bold_words):
     if not bold_words:
@@ -23,6 +25,8 @@ def new_template_project(project, org="", location="", duration="", items=[]):
 
 
 def bullets_from_list(items, end=True, highlight=None, new_template=False):
+    if not highlight:
+        highlight = KEYWORDS
     if not items:
         return ""
     cmd = "cvitems" if new_template else "itemize"
@@ -46,7 +50,7 @@ def create_details(project, filter=None):
             continue
 
         rs += f"""
-\\item \\textbf{{{p['title']}}} {{\\hfill {{{', '.join(p['tools'])}}}}}
+\\item \\textbf{{{p['title']}}} {{\\hfill {{{make_bold(", ".join(p.get("tools")), KEYWORDS)}}}}}
 {bullets_from_list(p['details'])}
 """
     return rs + "\n\\end{itemize}"
@@ -90,7 +94,7 @@ def create_project(project, new_template=False):
         )
         return new_template_project(
             project.get("title"),
-            ", ".join(project.get("tools")),
+            make_bold(", ".join(project["tools"]), KEYWORDS),
             repo,
             "",
             project.get("description"),
@@ -104,7 +108,7 @@ def create_project(project, new_template=False):
         repo = "\\item" + repo
     rs = f"""\\subsection{{\\textbf{{{project["title"]}}}}}
 {bullets_from_list(project["description"],end=False)}
-\\item{{Tools/Libraries: {", ".join(project["tools"])}}}
+\\item{{Tools/Libraries: {make_bold(", ".join(project["tools"]),KEYWORDS)}}}
 {repo}
 \\end{{itemize}}
 """
