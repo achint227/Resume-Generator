@@ -4,7 +4,7 @@ from json import load
 from os import chdir, system
 
 from load_sections import load_education, load_experiences, load_projects
-from load_user import find_by_name, find_by_resume_name, find_by_id
+from load_user import find_by_resume_name, find_by_id
 
 
 def to_latex_escape(string):
