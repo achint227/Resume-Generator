@@ -1,9 +1,10 @@
 import re
+import sys
 from json import load
 from os import chdir, system
 
 from load_sections import load_education, load_experiences, load_projects
-from load_user import find_by_name, find_by_resume_name
+from load_user import find_by_name, find_by_resume_name, find_by_id
 
 
 def to_latex_escape(string):
@@ -162,6 +163,24 @@ def main(resume_name, filename=None, filter=None, new_template=False):
     system(f"rm {filename}.*")
     chdir("..")
 
+def build_resume(id, filename=None, filter=None, new_template=False):
+    resume = find_by_id(id)
+    if not filename:
+        filename = resume["name"]
+    RESUME, template = generate_resume_content(resume, filter, new_template)
+    filename += ".tex"
+    with open(filename, "w") as output_tex:
+        output_tex.write(RESUME)
+    system(f"mv {filename} {template}/")
+    chdir(f"{template}")
+    system(f"xelatex -synctex=1 -interaction=nonstopmode {filename}")
+    filename = filename.split(".")[0]
+    system(f"mv {filename}.pdf ..")
+    system(f"mv {filename}.tex ..")
+    system(f"rm {filename}.*")
+    chdir("..")
+    return f"{filename}.pdf"    
+
 
 if __name__ == "__main__":
-    main("test1")
+    main(sys.argv[1])

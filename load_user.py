@@ -1,4 +1,5 @@
 from os import environ
+from bson.objectid import ObjectId
 
 import pymongo
 from dotenv import load_dotenv
@@ -21,6 +22,11 @@ def all_resumes():
         res.append(_)
 
     return res
+
+
+def find_by_id(id):
+    document_id = ObjectId(id)
+    return collection.find_one({"_id": document_id})
 
 
 def find_by_name(name):

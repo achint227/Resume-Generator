@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from load_user import find_by_name, add_resume, all_resumes
+from build_resume import build_resume
 
 app = Flask(__name__)
 cors = CORS(
@@ -16,6 +17,13 @@ def get_all():
     except Exception as e:
         print(e)
         return jsonify({"message": "Error"}), 500
+
+
+@app.route("/download/<id>", methods=["GET"])
+def send_resume(id):
+    filename = build_resume(id)
+    return send_file(filename, as_attachment=True)
+
 
 
 @app.route("/resume/<name>", methods=["GET"], endpoint="f2")
