@@ -41,40 +41,40 @@ def new_section(section_name, content, new_template=False):
     return f"\\section{{{section_name}}}\n{content}"
 
 
-def generate_resume_content(user, filter=None, new_template=False):
+def generate_resume_content(resume, keywords=None, new_template=False):
 
-    user = apply_latex_escape(user)
+    resume = apply_latex_escape(resume)
 
     education = new_section(
-        "Education", load_education(user["education"], new_template), new_template
+        "Education", load_education(resume["education"], new_template), new_template
     )
 
     experience = new_section(
         "Experience",
-        load_experiences(user["experiences"], filter, new_template),
+        load_experiences(resume["experiences"], keywords, new_template),
         new_template,
     )
     projects = new_section(
         "Projects",
-        load_projects(user["projects"], filter, new_template),
+        load_projects(resume["projects"], keywords, new_template),
         new_template,
     )
 
     summary = (
-        new_section("Summary", user["basic_info"].get("summary"), new_template)
-        if user["basic_info"].get("summary")
+        new_section("Summary", resume["basic_info"].get("summary"), new_template)
+        if resume["basic_info"].get("summary")
         else ""
     )
     homepage = (
-        f"\\homepage[{user['basic_info']['homepage']}]{{http://{user['basic_info']['homepage']}}}"
-        if not new_template and user["basic_info"].get("homepage")
+        f"\\homepage[{resume['basic_info']['homepage']}]{{http://{resume['basic_info']['homepage']}}}"
+        if not new_template and resume["basic_info"].get("homepage")
         else ""
     )
     sections = (
         summary,
-        experience,
         projects,
         education,
+        experience,
     )
     if new_template:
         RESUME = f"""
@@ -88,14 +88,14 @@ def generate_resume_content(user, filter=None, new_template=False):
 
 \\renewcommand{{\\acvHeaderSocialSep}}{{\\quad\\textbar\\quad}}
 
-\\name{'{'+'}{'.join([_ for _ in user['basic_info'].get('name').split()])+'}'}
+\\name{'{'+'}{'.join([_ for _ in resume['basic_info'].get('name').split()])+'}'}
 
-\\address{{{user['basic_info'].get('address')}}}
+\\address{{{resume['basic_info'].get('address')}}}
 
-\\mobile{{{user['basic_info'].get('phone')}}}
-\\email{{{user['basic_info'].get('email')}}}
-\\github{{{user['basic_info'].get('github')}}}
-\\linkedin{{{user['basic_info'].get('linkedin')}}}
+\\mobile{{{resume['basic_info'].get('phone')}}}
+\\email{{{resume['basic_info'].get('email')}}}
+\\github{{{resume['basic_info'].get('github')}}}
+\\linkedin{{{resume['basic_info'].get('linkedin')}}}
 \\begin{{document}}
 
 \\makecvheader
@@ -123,13 +123,13 @@ def generate_resume_content(user, filter=None, new_template=False):
 \\begin{{document}}
 \\pagenumbering{{gobble}} % suppress displaying page number
 
-\\name{{{user["basic_info"]["name"]}}}
+\\name{{{resume["basic_info"]["name"]}}}
 
 \\basicInfo{{
-\\email{{{user["basic_info"]["email"]}}} 
-\\phone{{{user["basic_info"]["phone"]}}} 
-\\linkedin[{user["basic_info"]["linkedin"]}]{{https://www.linkedin.com/in/{user["basic_info"]["linkedin"]}}}
-\\github[{user["basic_info"]["github"]}]{{https://github.com/{user["basic_info"]["github"]}}}
+\\email{{{resume["basic_info"]["email"]}}} 
+\\phone{{{resume["basic_info"]["phone"]}}} 
+\\linkedin[{resume["basic_info"]["linkedin"]}]{{https://www.linkedin.com/in/{resume["basic_info"]["linkedin"]}}}
+\\github[{resume["basic_info"]["github"]}]{{https://github.com/{resume["basic_info"]["github"]}}}
 {homepage}
 }}
 {sections[0]}
@@ -146,11 +146,11 @@ def generate_resume_content(user, filter=None, new_template=False):
     return (RESUME, "template2" if new_template else "template")
 
 
-def main(resume_name, filename=None, filter=None, new_template=False):
-    user = find_by_resume_name(resume_name)
+def main(resume_name, filename=None, keywords=None, new_template=False):
+    resume = find_by_resume_name(resume_name)
     if not filename:
         filename = resume_name
-    RESUME, template = generate_resume_content(user, filter, new_template)
+    RESUME, template = generate_resume_content(resume, keywords, new_template)
     filename += ".tex"
     with open(filename, "w") as output_tex:
         output_tex.write(RESUME)
@@ -158,16 +158,19 @@ def main(resume_name, filename=None, filter=None, new_template=False):
     chdir(f"{template}")
     system(f"xelatex -synctex=1 -interaction=nonstopmode {filename}")
     filename = filename.split(".")[0]
-    system(f"mv {filename}.pdf ..")
-    system(f"mv {filename}.tex ..")
+    system(f"mv {filename}.pdf ../assets")
+    system(f"mv {filename}.tex ../assets")
     system(f"rm {filename}.*")
     chdir("..")
 
-def build_resume(id, filename=None, filter=None, new_template=False):
+
+def build_resume(id, filename=None, keywords=None, new_template=False):
     resume = find_by_id(id)
     if not filename:
         filename = resume["name"]
-    RESUME, template = generate_resume_content(resume, filter, new_template)
+    if not keywords:
+        keywords = resume.get("keywords")
+    RESUME, template = generate_resume_content(resume, keywords, new_template)
     filename += ".tex"
     with open(filename, "w") as output_tex:
         output_tex.write(RESUME)
@@ -175,11 +178,11 @@ def build_resume(id, filename=None, filter=None, new_template=False):
     chdir(f"{template}")
     system(f"xelatex -synctex=1 -interaction=nonstopmode {filename}")
     filename = filename.split(".")[0]
-    system(f"mv {filename}.pdf ..")
-    system(f"mv {filename}.tex ..")
+    system(f"mv {filename}.pdf ../assets")
+    system(f"mv {filename}.tex ../assets")
     system(f"rm {filename}.*")
     chdir("..")
-    return f"{filename}.pdf"    
+    return f"assets/{filename}.pdf"
 
 
 if __name__ == "__main__":
