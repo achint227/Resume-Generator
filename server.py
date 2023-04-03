@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
-from load_user import find_by_name, add_resume, all_resumes
+from waitress import serve
+
 from build_resume import build_resume
+from load_user import add_resume, all_resumes, find_by_name
 
 app = Flask(__name__)
 cors = CORS(
@@ -23,7 +25,6 @@ def get_all():
 def send_resume(id):
     filename = build_resume(id)
     return send_file(filename, as_attachment=True)
-
 
 
 @app.route("/resume/<name>", methods=["GET"], endpoint="f2")
@@ -56,4 +57,4 @@ def add_document():
 
 
 if __name__ == "__main__":
-    app.run(port=8000)
+    serve(app, host="0.0.0.0", port=8000)
