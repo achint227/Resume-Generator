@@ -1,1 +1,1 @@
-KEYWORDS = ['python']
+KEYWORDS = []
