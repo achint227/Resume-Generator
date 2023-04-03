@@ -3,12 +3,13 @@ from flask_cors import CORS
 from waitress import serve
 
 from build_resume import build_resume
-from load_user import add_resume, all_resumes, find_by_name
+from load_user import add_resume, all_resumes, find_by_name, find_by_resume_name
 
 app = Flask(__name__)
 cors = CORS(
     app,
-    resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}},
+    resources={r"/*": {"origins": "*",
+                       "methods": ["GET", "POST", "PUT", "DELETE"]}},
 )
 
 
