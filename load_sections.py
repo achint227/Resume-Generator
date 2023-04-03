@@ -11,9 +11,11 @@ def make_bold(string, bold_words):
     return string
 
 
-def new_template_project(project, org="", location="", duration="", items=[]):
+def new_template_project(
+    project, org="", location="", duration="", items=[], keywords=None
+):
     if type(items) == list:
-        items = bullets_from_list(items, new_template=True)
+        items = bullets_from_list(items, highlight=keywords, new_template=True)
     return f"""
 
 \\cventry
@@ -39,49 +41,53 @@ def bullets_from_list(items, end=True, highlight=None, new_template=False):
     return f"\n{res}\n"
 
 
-def create_details(project, filter=None):
+def create_details(project, keywords=None):
+    if not keywords:
+        keywords = KEYWORDS
     if not project:
         return ""
     rs = "\\begin{itemize}\n"
     for p in project:
-        if filter and (
-            not any([_.lower() in [_.lower() for _ in p.get("tools")] for _ in filter])
-        ):
-            continue
 
         rs += f"""
-\\item \\textbf{{{p['title']}}} {{\\hfill {{{make_bold(", ".join(p.get("tools")), KEYWORDS)}}}}}
-{bullets_from_list(p['details'])}
+\\item \\textbf{{{p['title']}}} {{\\hfill {{{make_bold(", ".join(p.get("tools")), keywords)}}}}}
+{bullets_from_list(p['details'],highlight=keywords)}
 """
     return rs + "\n\\end{itemize}"
 
 
-def create_experience(exp, filter=None, new_template=False):
+def create_experience(exp, keywords=None, new_template=False):
     if new_template:
         return (
             new_template_project(
-                exp["company"], exp["title"], exp["location"], exp["duration"]
+                exp["company"],
+                exp["title"],
+                exp["location"],
+                exp["duration"],
+                keywords=keywords,
             )
             + "\n\\begin{cvparagraph}\n"
-            + create_details(exp["projects"], filter)
+            + create_details(exp["projects"], keywords)
             + "\n\\end{cvparagraph}\n"
         )
     rs = f"""
 \\datedsubsection{{\\textbf{{{exp['company']}}}}}{{{exp['location']}}}
 \\role{{{exp['title']}}} {{\\hfill {exp['duration']}}}
-{create_details(exp['projects'],filter)}
+{create_details(exp['projects'],keywords)}
 """
     return rs
 
 
-def load_experiences(experience, filter=None, new_template=False):
+def load_experiences(experience, keywords=None, new_template=False):
     rs = ""
     for exp in experience:
-        rs += create_experience(exp, filter, new_template)
+        rs += create_experience(exp, keywords, new_template)
     return rs
 
 
-def create_project(project, new_template=False):
+def create_project(project, keywords=None, new_template=False):
+    if not keywords:
+        keywords = KEYWORDS
     if new_template:
         repo = (
             "\\href{"
@@ -94,10 +100,11 @@ def create_project(project, new_template=False):
         )
         return new_template_project(
             project.get("title"),
-            make_bold(", ".join(project["tools"]), KEYWORDS),
+            make_bold(", ".join(project["tools"]), keywords),
             repo,
             "",
             project.get("description"),
+            keywords=keywords,
         )
     repo = (
         f"{{Repo: }}\\github[{project['repo'].split('/')[-1]}]{{{project['repo']}}}"
@@ -107,25 +114,18 @@ def create_project(project, new_template=False):
     if repo:
         repo = "\\item" + repo
     rs = f"""\\subsection{{\\textbf{{{project["title"]}}}}}
-{bullets_from_list(project["description"],end=False)}
-\\item{{Tools/Libraries: {make_bold(", ".join(project["tools"]),KEYWORDS)}}}
+{bullets_from_list(project["description"],end=False,highlight=keywords)}
+\\item{{Tools/Libraries: {make_bold(", ".join(project["tools"]),keywords)}}}
 {repo}
 \\end{{itemize}}
 """
     return rs
 
 
-def load_projects(projects, filter=None, new_template=False):
+def load_projects(projects, keywords=None, new_template=False):
     rs = ""
     for p in projects:
-        if filter and not bool(p.get("repo")):
-            continue
-
-        if filter and (
-            not any([_.lower() in [_.lower() for _ in p.get("tools")] for _ in filter])
-        ):
-            continue
-        rs += create_project(p, new_template)
+        rs += create_project(p, keywords, new_template)
     return rs
 
 
