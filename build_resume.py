@@ -1,10 +1,10 @@
 import re
 import sys
-from json import load
 from os import chdir, system
+from os.path import isfile
 
 from load_sections import load_education, load_experiences, load_projects
-from load_user import find_by_resume_name, find_by_id
+from load_user import find_by_id, find_by_resume_name
 
 
 def to_latex_escape(string):
@@ -33,9 +33,11 @@ def apply_latex_escape(d):
 def new_section(section_name, content, new_template=False):
     if new_template:
         if section_name.casefold() == "summary":
-            content = "\n\\begin{cvparagraph}\n" + content + "\n\\end{cvparagraph}"
+            content = "\n\\begin{cvparagraph}\n" + \
+                content + "\n\\end{cvparagraph}"
         else:
-            content = "\n\\begin{cventries}\n\n" + content + "\n\\end{cventries}"
+            content = "\n\\begin{cventries}\n\n" + \
+                content + "\n\\end{cventries}"
 
         return f"\\cvsection{{{section_name}}}\n{content}"
     return f"\\section{{{section_name}}}\n{content}"
@@ -46,7 +48,8 @@ def generate_resume_content(resume, keywords=None, new_template=False):
     resume = apply_latex_escape(resume)
 
     education = new_section(
-        "Education", load_education(resume["education"], new_template), new_template
+        "Education", load_education(
+            resume["education"], new_template), new_template
     )
 
     experience = new_section(
@@ -61,7 +64,8 @@ def generate_resume_content(resume, keywords=None, new_template=False):
     )
 
     summary = (
-        new_section("Summary", resume["basic_info"].get("summary"), new_template)
+        new_section("Summary", resume["basic_info"].get(
+            "summary"), new_template)
         if resume["basic_info"].get("summary")
         else ""
     )
@@ -164,10 +168,15 @@ def main(resume_name, filename=None, keywords=None, new_template=False):
     chdir("..")
 
 
-def build_resume(id, filename=None, keywords=None, new_template=False):
+def build_resume(id, filename=None, keywords=None, new_template=False, overwrite=False):
+
     resume = find_by_id(id)
     if not filename:
         filename = resume["name"]
+    if not overwrite:
+        if isfile(f"assets/{filename}.pdf"):
+            return f"assets/{filename}.pdf"
+
     if not keywords:
         keywords = resume.get("keywords")
     RESUME, template = generate_resume_content(resume, keywords, new_template)
