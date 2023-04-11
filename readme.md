@@ -15,7 +15,7 @@ Check requirements.txt for python package dependencies.
 
 ## Run
 
-**Before running, make sure to add .env file with DATABASE_URL **. 
+**Before running, make sure to add .env file with DATABASE_URL**. 
 
 Use the following command to run the server-
 
