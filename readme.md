@@ -1,6 +1,6 @@
-# Resume Build script
+# Resume build backend
 
-This project is based on project [Resume-Generator](https://github.com/cczhong11/Resume-Generator). In order to tailor resume for different companies and job roles this project came into veing
+This project is based on project [Resume-Generator](https://github.com/cczhong11/Resume-Generator). In order to tailor resume for different companies and job roles this project came into being
 
 The resume data is stored in a json document, in cloud an can be edited using [resume-ui](https://github.com/achint227/resume_ui/tree/main/resume)
 
