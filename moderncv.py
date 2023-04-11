@@ -1,7 +1,35 @@
-from template import Template, make_bold
+from template import Template, make_bold, split_string
 
 
 class ModernCV(Template):
+
+    def build_header(self):
+        basic_info = self.resume["basic_info"]
+        name = split_string(basic_info.get("name"))
+        address = split_string(basic_info.get('address'), ",")
+        phone = basic_info.get("phone")
+        email = basic_info.get("email")
+
+        homepage = f"\\homepage{{{basic_info.get('homepage')}}}" if basic_info.get(
+            'homepage') else ""
+        github = f"\\social[github]{{{basic_info.get('github')}}}" if basic_info.get(
+            "github") else ""
+        linkedin = f"\\social[linkedin]{{{basic_info.get('linkedin')}}}" if basic_info.get(
+            "linkedin") else ""
+        return f"""\\documentclass[10pt,a4paper,sans]{{moderncv}}  
+\\moderncvstyle{{banking}}
+\\moderncvcolor{{blue}}
+\\usepackage[scale=0.94]{{geometry}}
+\\name{name}
+\\address{address}
+\\phone[mobile]{{{phone}}}
+\\email{{{email}}}
+{homepage}
+{github}
+{linkedin}
+\\begin{{document}}
+\\makecvtitle
+"""
 
     def build_resume(self):
         return super().build_resume()
@@ -33,7 +61,8 @@ class ModernCV(Template):
 """
 
     def create_project(self, project):
-        tools = f"""\\\\Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""" if project.get(
+        tools = f"""
+Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""" if project.get(
             "tools") else ""
         return f"""\\medskip
 \\item
@@ -84,5 +113,5 @@ if __name__ == "__main__":
     from json import load
     with open("user.json", "r") as f:
         resume = load(f)
-    c = ModernCV(resume, ["SQL"])
-    print(c.load_experiences())
+    c = ModernCV(resume)
+    print(c.build_resume())
