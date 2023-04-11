@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
+from os import chdir, system
 import re
 
+from load_user import find_by_id
 
 def split_string(s, sep=" "):
     return '{' + \
@@ -41,9 +43,32 @@ def apply_latex_escape(d):
 
 
 class Template(ABC):
-    def __init__(self, resume, keywords=[]):
+    def __init__(self, id, keywords=[]):
+        resume = find_by_id(id)
         self.resume = apply_latex_escape(resume)
-        self.keywords = keywords + resume.get("keywords", [])
+        resume_keywords = [_.strip()
+                           for _ in resume.get("keywords", "").split(",")]
+
+        self.keywords = keywords + resume_keywords
+        self.folder = "assets"
+
+    def create_file(self):
+        filename=self.resume.get("name")+".tex"
+
+        with open(filename,"w") as output_tex:
+            output_tex.write(self.build_resume())
+        system(f"mv {filename} {self.folder}/")
+        chdir(f"{self.folder}")
+        system(f"xelatex -synctex=1 -interaction=nonstopmode {filename}")
+        filename = filename.split(".")[0]
+        system(f"mv {filename}.pdf ../assets")
+        system(f"mv {filename}.tex ../assets")
+        system(f"rm {filename}.*")
+        chdir("..")
+        return f"assets/{filename}.pdf"
+
+
+
 
     @abstractmethod
     def new_section(self, section_name, content, summary):
@@ -67,12 +92,12 @@ class Template(ABC):
 
     @abstractmethod
     def bullets_from_list(self, items):
-        pass
-
+        pass        
+    
     def build_resume(self, order=['e', 'p', 'w']):
         header = self.build_header()
         summary = self.new_section("Summary", self.resume.get(
-            "basic_info", {"summary": ""})["summary"],summary=True)
+            "basic_info", {"summary": ""})["summary"], summary=True)
         sections = []
 
         for section in order:

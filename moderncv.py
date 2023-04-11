@@ -2,6 +2,9 @@ from template import Template, make_bold, split_string
 
 
 class ModernCV(Template):
+    def __init__(self, id, keywords=[]):
+        super().__init__(id, keywords)
+        self.folder = "moderncv"
 
     def build_header(self):
         basic_info = self.resume["basic_info"]

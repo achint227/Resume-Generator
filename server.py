@@ -4,6 +4,7 @@ from waitress import serve
 
 from build_resume import build_resume
 from load_user import add_resume, all_resumes, find_by_name, find_by_resume_name
+from moderncv import ModernCV
 
 app = Flask(__name__)
 cors = CORS(
@@ -20,6 +21,16 @@ def get_all():
     except Exception as e:
         print(e)
         return jsonify({"message": "Error"}), 500
+
+
+@app.route("/download/<id>/<template>", methods=["GET"])
+def send_resume_with_template(id, template):
+    if template=='moderncv':
+        resume=ModernCV(id)
+    else:
+        return jsonify({"message": "Service unavailable"}), 503 
+    filename = resume.create_file()
+    return send_file(filename, as_attachment=True)
 
 
 @app.route("/download/<id>", methods=["GET"])
