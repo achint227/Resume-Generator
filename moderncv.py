@@ -34,9 +34,6 @@ class ModernCV(Template):
 \\makecvtitle
 """
 
-    def build_resume(self):
-        return super().build_resume()
-
     def create_details(self, projects):
         rs = ""
 
