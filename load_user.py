@@ -38,4 +38,4 @@ def find_by_resume_name(name):
 
 
 def add_resume(resume):
-    return collection.insert_one(resume)
+    return collection.insert_one(resume).inserted_id
