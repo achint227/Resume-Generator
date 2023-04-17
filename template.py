@@ -15,7 +15,7 @@ def make_bold(string, bold_words):
         return string
     for word in bold_words:
         string = re.sub(r"\b" + word + r"\b",
-                        r"\\textbf{" + word + "}", string)
+                        r"\\textbf{" + word + "}", string,flags=re.IGNORECASE)
     return string
 
 
@@ -45,7 +45,9 @@ def apply_latex_escape(d):
 class Template(ABC):
     def __init__(self, id, keywords=[]):
         resume = find_by_id(id)
+        name=resume.get("name")
         self.resume = apply_latex_escape(resume)
+        self.resume["name"]=name
         resume_keywords = [_.strip()
                            for _ in resume.get("keywords", "").split(",")]
 
@@ -94,7 +96,7 @@ class Template(ABC):
     def bullets_from_list(self, items):
         pass        
     
-    def build_resume(self, order=['e', 'p', 'w']):
+    def build_resume(self, order=['p', 'w', 'e']):
         header = self.build_header()
         summary = self.new_section("Summary", self.resume.get(
             "basic_info", {"summary": ""})["summary"], summary=True)
