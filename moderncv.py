@@ -76,6 +76,8 @@ Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""
         if not summary:
             content = "\n\\begin{itemize}\n" + \
                 content + "\n\\end{itemize}"
+        else:
+            content = make_bold(content,self.keywords)
         return f"""
 \\section{{{section_name}}}
 {content}"""
