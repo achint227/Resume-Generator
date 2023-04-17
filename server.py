@@ -25,10 +25,10 @@ def get_all():
 
 @app.route("/download/<id>/<template>", methods=["GET"])
 def send_resume_with_template(id, template):
-    if template=='moderncv':
-        resume=ModernCV(id)
+    if template == 'moderncv':
+        resume = ModernCV(id)
     else:
-        return jsonify({"message": "Service unavailable"}), 503 
+        return jsonify({"message": "Service unavailable"}), 503
     filename = resume.create_file()
     return send_file(filename, as_attachment=True)
 
@@ -65,7 +65,7 @@ def add_document():
     except:
         return jsonify({"message": "couldn't insert"}), 422
     finally:
-        return jsonify({"message": "added"})
+        return jsonify({"message": "added", "id": str(resume_id)})
 
 
 if __name__ == "__main__":
