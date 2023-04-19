@@ -4,6 +4,7 @@ import re
 
 from load_user import find_by_id
 
+
 def split_string(s, sep=" "):
     return '{' + \
         '}{'.join(
@@ -14,8 +15,11 @@ def make_bold(string, bold_words):
     if not bold_words:
         return string
     for word in bold_words:
-        string = re.sub(r"\b" + word + r"\b",
-                        r"\\textbf{" + word + "}", string,flags=re.IGNORECASE)
+        pattern = re.compile(r"\b" + word + r"\b", flags=re.IGNORECASE)
+        for match in pattern.finditer(string):
+            start, end = match.span()
+            word_case = string[start:end]
+            string = string[:start] + "\\textbf{" + word_case + "}" + string[end:]
     return string
 
 
@@ -45,9 +49,9 @@ def apply_latex_escape(d):
 class Template(ABC):
     def __init__(self, id, keywords=[]):
         resume = find_by_id(id)
-        name=resume.get("name")
+        name = resume.get("name")
         self.resume = apply_latex_escape(resume)
-        self.resume["name"]=name
+        self.resume["name"] = name
         resume_keywords = [_.strip()
                            for _ in resume.get("keywords", "").split(",")]
 
@@ -55,9 +59,9 @@ class Template(ABC):
         self.folder = "assets"
 
     def create_file(self):
-        filename=self.resume.get("name")+".tex"
+        filename = self.resume.get("name")+".tex"
 
-        with open(filename,"w") as output_tex:
+        with open(filename, "w") as output_tex:
             output_tex.write(self.build_resume())
         system(f"mv {filename} {self.folder}/")
         chdir(f"{self.folder}")
@@ -68,9 +72,6 @@ class Template(ABC):
         system(f"rm {filename}.*")
         chdir("..")
         return f"assets/{filename}.pdf"
-
-
-
 
     @abstractmethod
     def new_section(self, section_name, content, summary):
@@ -94,8 +95,8 @@ class Template(ABC):
 
     @abstractmethod
     def bullets_from_list(self, items):
-        pass        
-    
+        pass
+
     def build_resume(self, order=['p', 'w', 'e']):
         header = self.build_header()
         summary = self.new_section("Summary", self.resume.get(
@@ -142,3 +143,9 @@ class Template(ABC):
         for exp in experience:
             rs += self.create_experience(exp)
         return rs
+
+
+if __name__ == "__main__":
+    s = "The Quick Brown Fox Jumps Over The Lazy Dog"
+    words = ["brown", "fox", "dog"]
+    print(make_bold(s, words))
