@@ -53,7 +53,7 @@ class Template(ABC):
         self.resume = apply_latex_escape(resume)
         self.resume["name"] = name
         resume_keywords = [_.strip()
-                           for _ in resume.get("keywords", "").split(",")]
+                           for _ in resume.get("keywords", "").split(",") if _.strip()]
 
         self.keywords = keywords + resume_keywords
         self.folder = "assets"
