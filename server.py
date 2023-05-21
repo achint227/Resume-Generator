@@ -3,8 +3,10 @@ from flask_cors import CORS
 from waitress import serve
 
 from build_resume import build_resume
-from load_user import add_resume, all_resumes, find_by_name, find_by_resume_name
+from load_user import (add_resume, all_resumes, find_by_name,
+                       find_by_resume_name)
 from moderncv import ModernCV
+from template1 import Template1
 
 app = Flask(__name__)
 cors = CORS(
@@ -27,6 +29,8 @@ def get_all():
 def send_resume_with_template(id, template):
     if template == 'moderncv':
         resume = ModernCV(id)
+    elif template == 'resume':
+        resume = Template1(id)
     else:
         return jsonify({"message": "Service unavailable"}), 503
     filename = resume.create_file()
