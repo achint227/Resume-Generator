@@ -112,8 +112,5 @@ Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""
 
 
 if __name__ == "__main__":
-    from json import load
-    with open("user.json", "r") as f:
-        resume = load(f)
-    c = ModernCV(resume)
-    print(c.build_resume())
+    c = ModernCV("64352dbad8c0f7239c8e3323")
+    c.create_file()
