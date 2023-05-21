@@ -19,7 +19,8 @@ def make_bold(string, bold_words):
         for match in pattern.finditer(string):
             start, end = match.span()
             word_case = string[start:end]
-            string = string[:start] + "\\textbf{" + word_case + "}" + string[end:]
+            string = string[:start] + \
+                "\\textbf{" + word_case + "}" + string[end:]
     return string
 
 
@@ -93,9 +94,15 @@ class Template(ABC):
     def build_header(self):
         pass
 
-    @abstractmethod
     def bullets_from_list(self, items):
-        pass
+        if not items:
+            return ""
+        rs = []
+        for item in items:
+            rs.append(f"\\item{{{make_bold(item,self.keywords)}}}\n")
+        return f"""\\begin{{itemize}}
+{''.join(rs)}
+\\end{{itemize}}"""
 
     def build_resume(self, order=['p', 'w', 'e']):
         header = self.build_header()

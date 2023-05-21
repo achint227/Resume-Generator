@@ -37,15 +37,6 @@ class Template1(Template):
             content = make_bold(content, self.keywords)
         return f"\\section{{{section_name}}}\n{content}"
 
-    def bullets_from_list(self, items):
-        if not items:
-            return ""
-        rs = []
-        for item in items:
-            rs.append(f"\\item{{{make_bold(item,self.keywords)}}}\n")
-        return f"""\\begin{{itemize}}
-{''.join(rs)}
-\\end{{itemize}}"""
 
     def create_education(self, education):
         items = self.bullets_from_list(education.get("info", []))
