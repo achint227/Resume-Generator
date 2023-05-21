@@ -7,6 +7,7 @@ from load_user import (add_resume, all_resumes, find_by_name,
                        find_by_resume_name)
 from moderncv import ModernCV
 from template1 import Template1
+from template2 import Template2
 
 app = Flask(__name__)
 cors = CORS(
@@ -31,6 +32,8 @@ def send_resume_with_template(id, template):
         resume = ModernCV(id)
     elif template == 'resume':
         resume = Template1(id)
+    elif template == 'russel':
+        resume = Template2(id)
     else:
         return jsonify({"message": "Service unavailable"}), 503
     filename = resume.create_file()

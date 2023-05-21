@@ -2,7 +2,7 @@ from template import Template, split_string, make_bold
 
 
 class Template2(Template):
-    def __init__(self, id, keywords=...):
+    def __init__(self, id, keywords=[]):
         super().__init__(id, keywords)
         self.folder = "russel"
 
@@ -35,7 +35,7 @@ class Template2(Template):
 \\makecvheader
 """
 
-    def new_section(self, section_name, content, summary):
+    def new_section(self, section_name, content, summary=False):
         if not content.strip():
             return ""
         if summary:
@@ -47,22 +47,35 @@ class Template2(Template):
         return f"\\cvsection{{{section_name}}}\n{content}"
 
     def bullets_from_list(self, items):
+        if not items:
+            return ""
         rs = []
         for item in items:
             rs.append(f"\\item{{{make_bold(item,self.keywords)}}}\n")
         return f"""\\begin{{cvitems}}
-{''.join(rs)}
-\\end{{cvitems}}"""
+{''.join(rs)}\\end{{cvitems}}"""
 
     def create_section(self, project, org="", location="", duration="", items=[]):
         if type(items) == list:
             items = self.bullets_from_list(items)
-        return f"""\\cventry
+        return f"""
+\\cventry
 {{{org}}}
 {{{project}}}
 {{{location}}}
 {{{duration}}}
 {{{items}}}"""
+
+    def create_details(self, projects):
+        if not projects:
+            return ""
+        rs = "\\begin{itemize}\n"
+        for p in projects:
+            rs += f"""\\item \\textbf{{{p['title']}}} {{\\hfill {{{make_bold(", ".join(p.get("tools")), self.keywords)}}}}}
+{super().bullets_from_list(p['details'])}
+"""
+        return rs + "\n\\end{itemize}"
+    
 
     def create_education(self, education):
         return self.create_section(
@@ -72,9 +85,39 @@ class Template2(Template):
             education.get("duration", ""),
             education.get("info", []),
         )
-    
+
+    def create_project(self, project):
+        repo = (
+            "\\href{"
+            + project.get("repo")
+            + "}{"
+            + project.get("repo").split("/")[-1]
+            + "}"
+            if project.get("repo")
+            else ""
+        )
+        return self.create_section(
+            project.get("title"),
+            make_bold(", ".join(project["tools"]), self.keywords),
+            repo,
+            "",
+            project.get("description")
+        )
+
+    def create_experience(self, exp):
+        return (
+            self.create_section(
+                exp["company"],
+                exp["title"],
+                exp["location"],
+                exp["duration"]
+            )
+            + "\n\\begin{cvparagraph}\n"
+            + self.create_details(exp["projects"])
+            + "\n\\end{cvparagraph}\n"
+        )
+
 
 if __name__ == "__main__":
-    from json import load
-    with open("user.json", "r") as f:
-        resume = load(f)
+    c = Template2("64352dbad8c0f7239c8e3323")
+    c.create_file()
