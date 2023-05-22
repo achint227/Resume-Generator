@@ -59,11 +59,11 @@ class Template(ABC):
         self.keywords = keywords + resume_keywords
         self.folder = "assets"
 
-    def create_file(self):
+    def create_file(self, order='pwe'):
         filename = self.resume.get("name")+".tex"
 
         with open(filename, "w") as output_tex:
-            output_tex.write(self.build_resume())
+            output_tex.write(self.build_resume(order))
         system(f"mv {filename} {self.folder}/")
         chdir(f"{self.folder}")
         system(f"xelatex -synctex=1 -interaction=nonstopmode {filename}")
@@ -104,7 +104,7 @@ class Template(ABC):
 {''.join(rs)}
 \\end{{itemize}}"""
 
-    def build_resume(self, order=['p', 'w', 'e']):
+    def build_resume(self, order):
         header = self.build_header()
         summary = self.new_section("Summary", self.resume.get(
             "basic_info", {"summary": ""})["summary"], summary=True)

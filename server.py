@@ -26,8 +26,10 @@ def get_all():
         return jsonify({"message": "Error"}), 500
 
 
-@app.route("/download/<id>/<template>", methods=["GET"])
-def send_resume_with_template(id, template):
+@app.route("/download/<id>/<template>/<order>", methods=["GET"])
+def send_resume_with_template(id, template, order):
+    if len(order)!=3 or any(x not in order for x in 'pwe'):
+        return jsonify({"message": "invalid format for order"}), 422
     if template == 'moderncv':
         resume = ModernCV(id)
     elif template == 'resume':
@@ -36,7 +38,7 @@ def send_resume_with_template(id, template):
         resume = Template2(id)
     else:
         return jsonify({"message": "Service unavailable"}), 503
-    filename = resume.create_file()
+    filename = resume.create_file(order)
     return send_file(filename, as_attachment=True)
 
 
