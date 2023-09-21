@@ -34,3 +34,7 @@ tqdm==4.64.1
 urllib3==1.26.13
 Werkzeug==2.2.3
 wheel==0.37.1
+flask-cors
+waitress
+pymongo
+python-dotenv
