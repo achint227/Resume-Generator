@@ -15,7 +15,6 @@ Jinja2==3.1.2
 MarkupSafe==2.1.2
 pip==22.3.1
 pluggy==1.0.0
-pycosat==0.6.4
 pycparser==2.21
 pyOpenSSL==22.0.0
 PySocks==1.7.1
