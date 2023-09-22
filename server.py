@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from waitress import serve
 
-from build_resume import build_resume
 from load_user import (add_resume, all_resumes, find_by_name,
                        find_by_resume_name)
 from moderncv import ModernCV
@@ -39,12 +38,6 @@ def send_resume_with_template(id, template, order):
     else:
         return jsonify({"message": "Service unavailable"}), 503
     filename = resume.create_file(order)
-    return send_file(filename, as_attachment=True)
-
-
-@app.route("/download/<id>", methods=["GET"])
-def send_resume(id):
-    filename = build_resume(id)
     return send_file(filename, as_attachment=True)
 
 
