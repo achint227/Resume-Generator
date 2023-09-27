@@ -16,6 +16,11 @@ cors = CORS(
 )
 
 
+@app.route("/",methods=["GET"])
+def hello_word():
+  return jsonify({"message":"Hello from Resume-Generator"})
+
+
 @app.route("/resume", methods=["GET"], endpoint="f1")
 def get_all():
     try:
