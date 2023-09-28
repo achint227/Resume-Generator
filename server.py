@@ -46,6 +46,22 @@ def send_resume_with_template(id, template, order):
     return send_file(filename, as_attachment=True)
 
 
+@app.route("/copy/<id>/<template>/<order>", methods=["GET"])
+def resume_text(id, template, order):
+    if len(order)!=3 or any(x not in order for x in 'pwe'):
+        return jsonify({"message": "invalid format for order"}), 422
+    if template == 'moderncv':
+        resume = ModernCV(id)
+    elif template == 'resume':
+        resume = Template1(id)
+    elif template == 'russel':
+        resume = Template2(id)
+    else:
+        return jsonify({"message": "Service unavailable"}), 503
+            
+    return jsonify({"resume":resume.build_resume(order)})
+
+
 @app.route("/resume/<name>", methods=["GET"], endpoint="f2")
 def get_resume(name):
     user = find_by_resume_name(name)
@@ -76,4 +92,4 @@ def add_document():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000)
