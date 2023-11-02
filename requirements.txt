@@ -20,8 +20,6 @@ pyOpenSSL==22.0.0
 PySocks==1.7.1
 requests==2.28.1
 ruamel.yaml==0.17.21
-ruamel.yaml.clib==0.2.6
-setuptools==65.5.0
 shutilwhich==1.1.0
 six==1.16.0
 tempdir==0.7.1
@@ -29,7 +27,6 @@ toolz==0.12.0
 tqdm==4.64.1
 urllib3==1.26.13
 Werkzeug==2.2.3
-wheel==0.37.1
 flask-cors
 waitress
 pymongo
