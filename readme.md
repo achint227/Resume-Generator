@@ -1,24 +1,84 @@
-# Resume build backend
+# Resume Build Backend
 
-This project is based on project [Resume-Generator](https://github.com/cczhong11/Resume-Generator). In order to tailor resume for different companies and job roles this project came into being
+This project is based on [Resume-Generator](https://github.com/cczhong11/Resume-Generator). It generates tailored resumes for different companies and job roles using LaTeX templates.
 
-The resume data is stored in a json document, in cloud an can be edited using [resume-ui](https://github.com/achint227/resume/tree/main/)
+The resume data is stored in a MongoDB database and can be edited using [resume-ui](https://github.com/achint227/resume/tree/main/).
+
+## Project Structure
+
+```
+.
+├── app.py                  # Main Flask application entry point
+├── src/
+│   ├── api/               # API routes and endpoints
+│   │   └── routes.py
+│   ├── database/          # Database operations
+│   │   └── operations.py
+│   ├── templates/         # Resume template classes
+│   │   ├── base.py       # Base template class
+│   │   ├── moderncv.py   # ModernCV template
+│   │   ├── template1.py  # Resume template
+│   │   └── template2.py  # Russell template
+│   └── config.py         # Configuration
+├── assets/               # Generated PDF output
+├── moderncv/            # ModernCV LaTeX files
+├── resume/              # Resume LaTeX files
+├── russel/              # Russell LaTeX files
+└── requirements.txt     # Python dependencies
+```
 
 ## Install
 
 Make sure you have the following software:
 
-- texlive
-- Python3.6+
+- texlive (for LaTeX compilation)
+- Python 3.6+
 
-Check requirements.txt for python package dependencies.
+Install Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Configuration
+
+Create a `.env` file in the root directory with your MongoDB connection string:
+
+```
+DATABASE_URL=mongodb://your-connection-string
+```
 
 ## Run
 
-**Before running, make sure to add .env file with DATABASE_URL**. 
-
-Use the following command to run the server-
+Start the Flask server:
 
 ```bash
-python server.py
+python app.py
 ```
+
+The server will run on `http://0.0.0.0:8000`
+
+## API Endpoints
+
+- `GET /` - Health check
+- `GET /resume` - Get all resumes
+- `GET /resume/<name>` - Get resume by name
+- `GET /resume/user/<name>` - Get resume by user name
+- `POST /resume` - Add new resume
+- `GET /download/<id>/<template>/<order>` - Download resume PDF
+- `GET /copy/<id>/<template>/<order>` - Get resume LaTeX source
+
+### Templates
+
+- `moderncv` - Modern CV template
+- `resume` - Classic resume template
+- `russel` - Russell template
+
+### Order Parameter
+
+The `order` parameter controls section ordering (3 characters):
+- `p` - Projects
+- `w` - Work Experience
+- `e` - Education
+
+Example: `pwe` = Projects, Work Experience, Education

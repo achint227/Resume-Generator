@@ -1,4 +1,4 @@
-from template import Template, make_bold
+from src.templates.base import Template, make_bold
 
 
 class Template1(Template):
@@ -11,12 +11,21 @@ class Template1(Template):
         name = basic_info.get("name")
         phone = basic_info.get("phone")
         email = basic_info.get("email")
-        homepage = f"\\homepage[{basic_info.get('homepage')}]{{{basic_info.get('homepage')}}}" if basic_info.get(
-            'homepage') else ""
-        github = f"\\github[{basic_info.get('github')}]{{https://github.com/{basic_info.get('github')}}}" if basic_info.get(
-            "github") else ""
-        linkedin = f"\\linkedin[{basic_info.get('linkedin')}]{{https://www.linkedin.com/in/{basic_info.get('linkedin')}}}" if basic_info.get(
-            "linkedin") else ""
+        homepage = (
+            f"\\homepage[{basic_info.get('homepage')}]{{{basic_info.get('homepage')}}}"
+            if basic_info.get("homepage")
+            else ""
+        )
+        github = (
+            f"\\github[{basic_info.get('github')}]{{https://github.com/{basic_info.get('github')}}}"
+            if basic_info.get("github")
+            else ""
+        )
+        linkedin = (
+            f"\\linkedin[{basic_info.get('linkedin')}]{{https://www.linkedin.com/in/{basic_info.get('linkedin')}}}"
+            if basic_info.get("linkedin")
+            else ""
+        )
         return f"""\\documentclass{{resume}}
 \\begin{{document}}
 \\pagenumbering{{gobble}}
@@ -36,7 +45,6 @@ class Template1(Template):
         if summary:
             content = make_bold(content, self.keywords)
         return f"\\section{{{section_name}}}\n{content}"
-
 
     def create_education(self, education):
         items = self.bullets_from_list(education.get("info", []))
@@ -74,8 +82,3 @@ class Template1(Template):
 {repo}
 \\end{{itemize}}
 """
-
-
-if __name__ == "__main__":
-    c = Template1("64352dbad8c0f7239c8e3323")
-    c.create_file()

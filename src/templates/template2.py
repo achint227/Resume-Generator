@@ -1,4 +1,4 @@
-from template import Template, split_string, make_bold
+from src.templates.base import Template, split_string, make_bold
 
 
 class Template2(Template):
@@ -9,15 +9,22 @@ class Template2(Template):
     def build_header(self):
         basic_info = self.resume["basic_info"]
         name = split_string(basic_info.get("name"))
-        address = split_string(basic_info.get('address'), ",")
+        address = split_string(basic_info.get("address"), ",")
         phone = basic_info.get("phone")
         email = basic_info.get("email")
-        homepage = f"\\homepage{{{basic_info.get('homepage')}}}" if basic_info.get(
-            'homepage') else ""
-        github = f"\\github{{{basic_info.get('github')}}}" if basic_info.get(
-            "github") else ""
-        linkedin = f"\\linkedin{{{basic_info.get('linkedin')}}}" if basic_info.get(
-            "linkedin") else ""
+        homepage = (
+            f"\\homepage{{{basic_info.get('homepage')}}}"
+            if basic_info.get("homepage")
+            else ""
+        )
+        github = (
+            f"\\github{{{basic_info.get('github')}}}" if basic_info.get("github") else ""
+        )
+        linkedin = (
+            f"\\linkedin{{{basic_info.get('linkedin')}}}"
+            if basic_info.get("linkedin")
+            else ""
+        )
         return f"""\\documentclass[11pt, a4paper]{{russell}}
 \\geometry{{left=1.4cm, top=.8cm, right=1.4cm, bottom=1.8cm, footskip=.5cm}}
 \\fontdir[fonts/]
@@ -39,11 +46,9 @@ class Template2(Template):
         if not content.strip():
             return ""
         if summary:
-            content = "\n\\begin{cvparagraph}\n" + \
-                content + "\n\\end{cvparagraph}"
+            content = "\n\\begin{cvparagraph}\n" + content + "\n\\end{cvparagraph}"
         else:
-            content = "\n\\begin{cventries}\n\n" + \
-                content + "\n\\end{cventries}"
+            content = "\n\\begin{cventries}\n\n" + content + "\n\\end{cventries}"
         return f"\\cvsection{{{section_name}}}\n{content}"
 
     def bullets_from_list(self, items):
@@ -55,7 +60,9 @@ class Template2(Template):
         return f"""\\begin{{cvitems}}
 {''.join(rs)}\\end{{cvitems}}"""
 
-    def create_section(self, project, org="", location="", duration="", items=[]):
+    def create_section(
+        self, project, org="", location="", duration="", items=[]
+    ):
         if type(items) == list:
             items = self.bullets_from_list(items)
         return f"""
@@ -75,7 +82,6 @@ class Template2(Template):
 {super().bullets_from_list(p['details'])}
 """
         return rs + "\n\\end{itemize}"
-    
 
     def create_education(self, education):
         return self.create_section(
@@ -101,23 +107,15 @@ class Template2(Template):
             make_bold(", ".join(project["tools"]), self.keywords),
             repo,
             "",
-            project.get("description")
+            project.get("description"),
         )
 
     def create_experience(self, exp):
         return (
             self.create_section(
-                exp["company"],
-                exp["title"],
-                exp["location"],
-                exp["duration"]
+                exp["company"], exp["title"], exp["location"], exp["duration"]
             )
             + "\n\\begin{cvparagraph}\n"
             + self.create_details(exp["projects"])
             + "\n\\end{cvparagraph}\n"
         )
-
-
-if __name__ == "__main__":
-    c = Template2("64352dbad8c0f7239c8e3323")
-    c.create_file()

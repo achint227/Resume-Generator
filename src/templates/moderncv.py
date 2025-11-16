@@ -1,4 +1,4 @@
-from template import Template, make_bold, split_string
+from src.templates.base import Template, make_bold, split_string
 
 
 class ModernCV(Template):
@@ -9,16 +9,25 @@ class ModernCV(Template):
     def build_header(self):
         basic_info = self.resume["basic_info"]
         name = split_string(basic_info.get("name"))
-        address = split_string(basic_info.get('address'), ",")
+        address = split_string(basic_info.get("address"), ",")
         phone = basic_info.get("phone")
         email = basic_info.get("email")
 
-        homepage = f"\\homepage{{{basic_info.get('homepage')}}}" if basic_info.get(
-            'homepage') else ""
-        github = f"\\social[github]{{{basic_info.get('github')}}}" if basic_info.get(
-            "github") else ""
-        linkedin = f"\\social[linkedin]{{{basic_info.get('linkedin')}}}" if basic_info.get(
-            "linkedin") else ""
+        homepage = (
+            f"\\homepage{{{basic_info.get('homepage')}}}"
+            if basic_info.get("homepage")
+            else ""
+        )
+        github = (
+            f"\\social[github]{{{basic_info.get('github')}}}"
+            if basic_info.get("github")
+            else ""
+        )
+        linkedin = (
+            f"\\social[linkedin]{{{basic_info.get('linkedin')}}}"
+            if basic_info.get("linkedin")
+            else ""
+        )
         return f"""\\documentclass[10pt,a4paper,sans]{{moderncv}}  
 \\moderncvstyle{{banking}}
 \\moderncvcolor{{blue}}
@@ -41,8 +50,11 @@ class ModernCV(Template):
             return rs
 
         for project in projects:
-            tools = f"""\\\\Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""" if project.get(
-                "tools") else ""
+            tools = (
+                f"""\\\\Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}"""
+                if project.get("tools")
+                else ""
+            )
             rs += f"""\\smallskip\\cventry{{}}{{\\textbf{{{project.get("title","")}}}}}{{}}{{}}{{}}
 {{{self.bullets_from_list(project.get("details",[]),True)}{tools}}}"""
         return rs
@@ -61,9 +73,12 @@ class ModernCV(Template):
 """
 
     def create_project(self, project):
-        tools = f"""
-Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""" if project.get(
-            "tools") else ""
+        tools = (
+            f"""
+Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}"""
+            if project.get("tools")
+            else ""
+        )
         return f"""\\medskip
 \\item
 {{\\cventry{{}}{{{project.get("repo","")}}}{{{project.get("title","")}}}{{}}{{}}
@@ -74,10 +89,9 @@ Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""
         if not content.strip():
             return ""
         if not summary:
-            content = "\n\\begin{itemize}\n" + \
-                content + "\n\\end{itemize}"
+            content = "\n\\begin{itemize}\n" + content + "\n\\end{itemize}"
         else:
-            content = make_bold(content,self.keywords)
+            content = make_bold(content, self.keywords)
         return f"""
 \\section{{{section_name}}}
 {content}"""
@@ -87,8 +101,11 @@ Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""
         for item in items:
             if not dots:
                 parts = item.split(":")
-                bullet = f"\\textbf{{{parts[0]}:}}{make_bold(':'.join(parts[1:]),self.keywords)}" if len(
-                    parts) > 1 else item
+                bullet = (
+                    f"\\textbf{{{parts[0]}:}}{make_bold(':'.join(parts[1:]),self.keywords)}"
+                    if len(parts) > 1
+                    else item
+                )
 
                 rs.append(f"""
 {bullet}""")
@@ -109,8 +126,3 @@ Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}""
 {{{education.get("location","")}}}
 {{}}{{}}}}
 {items}"""
-
-
-if __name__ == "__main__":
-    c = ModernCV("64352dbad8c0f7239c8e3323")
-    c.create_file()

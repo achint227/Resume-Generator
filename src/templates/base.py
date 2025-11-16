@@ -2,13 +2,11 @@ from abc import ABC, abstractmethod
 from os import chdir, system
 import re
 
-from load_user import find_by_id
+from src.database.operations import find_by_id
 
 
 def split_string(s, sep=" "):
-    return '{' + \
-        '}{'.join(
-            [_.strip() for _ in s.split(sep)])+'}'
+    return "{" + "}{".join([_.strip() for _ in s.split(sep)]) + "}"
 
 
 def make_bold(string, bold_words):
@@ -19,8 +17,7 @@ def make_bold(string, bold_words):
         for match in pattern.finditer(string):
             start, end = match.span()
             word_case = string[start:end]
-            string = string[:start] + \
-                "\\textbf{" + word_case + "}" + string[end:]
+            string = string[:start] + "\\textbf{" + word_case + "}" + string[end:]
     return string
 
 
@@ -53,14 +50,15 @@ class Template(ABC):
         name = resume.get("name")
         self.resume = apply_latex_escape(resume)
         self.resume["name"] = name
-        resume_keywords = [_.strip()
-                           for _ in resume.get("keywords", "").split(",") if _.strip()]
+        resume_keywords = [
+            _.strip() for _ in resume.get("keywords", "").split(",") if _.strip()
+        ]
 
         self.keywords = keywords + resume_keywords
         self.folder = "assets"
 
-    def create_file(self, order='pwe'):
-        filename = self.resume.get("name")+".tex"
+    def create_file(self, order="pwe"):
+        filename = self.resume.get("name") + ".tex"
 
         with open(filename, "w") as output_tex:
             output_tex.write(self.build_resume(order))
@@ -106,20 +104,18 @@ class Template(ABC):
 
     def build_resume(self, order):
         header = self.build_header()
-        summary = self.new_section("Summary", self.resume.get(
-            "basic_info", {"summary": ""})["summary"], summary=True)
+        summary = self.new_section(
+            "Summary", self.resume.get("basic_info", {"summary": ""})["summary"], summary=True
+        )
         sections = []
 
         for section in order:
-            if section == 'e':
-                sections.append(self.new_section(
-                    "Education", self.load_education()))
-            elif section == 'p':
-                sections.append(self.new_section(
-                    "Projects", self.load_projects()))
-            elif section == 'w':
-                sections.append(self.new_section(
-                    "Experience", self.load_experiences()))
+            if section == "e":
+                sections.append(self.new_section("Education", self.load_education()))
+            elif section == "p":
+                sections.append(self.new_section("Projects", self.load_projects()))
+            elif section == "w":
+                sections.append(self.new_section("Experience", self.load_experiences()))
 
         return f"""
 {header}
@@ -150,9 +146,3 @@ class Template(ABC):
         for exp in experience:
             rs += self.create_experience(exp)
         return rs
-
-
-if __name__ == "__main__":
-    s = "The Quick Brown Fox Jumps Over The Lazy Dog"
-    words = ["brown", "fox", "dog"]
-    print(make_bold(s, words))
