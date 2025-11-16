@@ -32,13 +32,18 @@ The resume data is stored in a MongoDB database and can be edited using [resume-
 Make sure you have the following software:
 
 - texlive (for LaTeX compilation)
-- Python 3.6+
+- Python 3.8+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (Python package manager)
 
-Install Python dependencies:
+### Setup with UV
+
+Install dependencies using UV:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
+
+This will create a virtual environment and install all dependencies from `pyproject.toml`.
 
 ## Configuration
 
@@ -48,11 +53,24 @@ Create a `.env` file in the root directory with your MongoDB connection string:
 DATABASE_URL=mongodb://your-connection-string
 ```
 
-## Run
-
-Start the Flask server:
+Copy from the example:
 
 ```bash
+cp .env.example .env
+```
+
+## Run
+
+Start the Flask server using UV:
+
+```bash
+uv run python app.py
+```
+
+Or activate the virtual environment and run directly:
+
+```bash
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 python app.py
 ```
 
