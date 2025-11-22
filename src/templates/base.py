@@ -50,9 +50,13 @@ class Template(ABC):
         name = resume.get("name")
         self.resume = apply_latex_escape(resume)
         self.resume["name"] = name
-        resume_keywords = [
-            _.strip() for _ in resume.get("keywords", "").split(",") if _.strip()
-        ]
+        
+        # Handle keywords as either string or list
+        keywords_data = resume.get("keywords", "")
+        if isinstance(keywords_data, list):
+            resume_keywords = [k.strip() for k in keywords_data if k.strip()]
+        else:
+            resume_keywords = [k.strip() for k in keywords_data.split(",") if k.strip()]
 
         self.keywords = keywords + resume_keywords
         self.folder = "assets"
@@ -104,9 +108,9 @@ class Template(ABC):
 
     def build_resume(self, order):
         header = self.build_header()
-        summary = self.new_section(
-            "Summary", self.resume.get("basic_info", {"summary": ""})["summary"], summary=True
-        )
+        basic_info = self.resume.get("basic_info", {})
+        summary_text = basic_info.get("summary", "") if isinstance(basic_info, dict) else ""
+        summary = self.new_section("Summary", summary_text, summary=True)
         sections = []
 
         for section in order:
@@ -127,21 +131,21 @@ class Template(ABC):
 """
 
     def load_education(self):
-        education = self.resume.get("education")
+        education = self.resume.get("education", [])
         rs = ""
         for ed in education:
             rs += self.create_education(ed)
         return rs
 
     def load_projects(self):
-        projects = self.resume.get("projects")
+        projects = self.resume.get("projects", [])
         rs = ""
         for p in projects:
             rs += self.create_project(p)
         return rs
 
     def load_experiences(self):
-        experience = self.resume.get("experiences")
+        experience = self.resume.get("experiences", [])
         rs = ""
         for exp in experience:
             rs += self.create_experience(exp)

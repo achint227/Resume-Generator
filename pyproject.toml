@@ -5,19 +5,19 @@ description = "Resume generator backend with LaTeX templates"
 readme = "readme.md"
 requires-python = ">=3.8"
 dependencies = [
-    "Flask==2.2.3",
+    "Flask>=3.0.0",
     "flask-cors",
     "waitress",
-    "pymongo",
     "python-dotenv",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[project.optional-dependencies]
+mongodb = [
+    "pymongo>=4.0.0",
+]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=7.0",
     "black>=23.0",
     "ruff>=0.1.0",

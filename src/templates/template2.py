@@ -7,11 +7,11 @@ class Template2(Template):
         self.folder = "russel"
 
     def build_header(self):
-        basic_info = self.resume["basic_info"]
-        name = split_string(basic_info.get("name"))
-        address = split_string(basic_info.get("address"), ",")
-        phone = basic_info.get("phone")
-        email = basic_info.get("email")
+        basic_info = self.resume.get("basic_info", {})
+        name = split_string(basic_info.get("name", ""))
+        address = split_string(basic_info.get("address", ""), ",")
+        phone = basic_info.get("phone", "")
+        email = basic_info.get("email", "")
         homepage = (
             f"\\homepage{{{basic_info.get('homepage')}}}"
             if basic_info.get("homepage")
@@ -78,14 +78,14 @@ class Template2(Template):
             return ""
         rs = "\\begin{itemize}\n"
         for p in projects:
-            rs += f"""\\item \\textbf{{{p['title']}}} {{\\hfill {{{make_bold(", ".join(p.get("tools")), self.keywords)}}}}}
-{super().bullets_from_list(p['details'])}
+            rs += f"""\\item \\textbf{{{p.get('title','')}}} {{\\hfill {{{make_bold(", ".join(p.get("tools",[])), self.keywords)}}}}}
+{super().bullets_from_list(p.get('details',[]))}
 """
         return rs + "\n\\end{itemize}"
 
     def create_education(self, education):
         return self.create_section(
-            education.get("university"),
+            education.get("university", ""),
             education.get("degree", ""),
             education.get("location", ""),
             education.get("duration", ""),
@@ -103,19 +103,19 @@ class Template2(Template):
             else ""
         )
         return self.create_section(
-            project.get("title"),
-            make_bold(", ".join(project["tools"]), self.keywords),
+            project.get("title", ""),
+            make_bold(", ".join(project.get("tools", [])), self.keywords),
             repo,
             "",
-            project.get("description"),
+            project.get("description", []),
         )
 
     def create_experience(self, exp):
         return (
             self.create_section(
-                exp["company"], exp["title"], exp["location"], exp["duration"]
+                exp.get("company", ""), exp.get("title", ""), exp.get("location", ""), exp.get("duration", "")
             )
             + "\n\\begin{cvparagraph}\n"
-            + self.create_details(exp["projects"])
+            + self.create_details(exp.get("projects", []))
             + "\n\\end{cvparagraph}\n"
         )

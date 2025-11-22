@@ -7,10 +7,10 @@ class Template1(Template):
         self.folder = "resume"
 
     def build_header(self):
-        basic_info = self.resume["basic_info"]
-        name = basic_info.get("name")
-        phone = basic_info.get("phone")
-        email = basic_info.get("email")
+        basic_info = self.resume.get("basic_info", {})
+        name = basic_info.get("name", "")
+        phone = basic_info.get("phone", "")
+        email = basic_info.get("email", "")
         homepage = (
             f"\\homepage[{basic_info.get('homepage')}]{{{basic_info.get('homepage')}}}"
             if basic_info.get("homepage")
@@ -58,15 +58,20 @@ class Template1(Template):
             return ""
         rs = "\\begin{itemize}\n"
         for p in projects:
-            rs += f"""\\item \\textbf{{{p['title']}}} {{\\hfill {{{make_bold(", ".join(p.get("tools")), self.keywords)}}}}}
-{self.bullets_from_list(p['details'])}
+            rs += f"""\\item \\textbf{{{p.get('title','')}}} {{\\hfill {{{make_bold(", ".join(p.get("tools",[])), self.keywords)}}}}}
+{self.bullets_from_list(p.get('details',[]))}
 """
         return rs + "\n\\end{itemize}"
 
     def create_experience(self, exp):
-        return f"""\\datedsubsection{{\\textbf{{{exp['company']}}}}}{{{exp['location']}}}
-\\role{{{exp['title']}}} {{\\hfill {exp['duration']}}}
-{self.create_details(exp['projects'])}
+        company = exp.get('company', '')
+        location = exp.get('location', '')
+        title = exp.get('title', '')
+        duration = exp.get('duration', '')
+        details = self.create_details(exp.get('projects', []))
+        return f"""\\datedsubsection{{\\textbf{{{company}}}}}{{{location}}}
+\\role{{{title}}} {{\\hfill {duration}}}
+{details}
 """
 
     def create_project(self, project):
@@ -75,10 +80,10 @@ class Template1(Template):
             if project.get("repo")
             else ""
         )
-        return f"""\\subsection{{\\textbf{{{project["title"]}}}}}
-{self.bullets_from_list(project["description"])}
+        return f"""\\subsection{{\\textbf{{{project.get("title","")}}}}}
+{self.bullets_from_list(project.get("description",[]))}
 \\begin{{itemize}}
-\\item{{Tools/Libraries: {make_bold(", ".join(project["tools"]),self.keywords)}}}
+\\item{{Tools/Libraries: {make_bold(", ".join(project.get("tools",[])),self.keywords)}}}
 {repo}
 \\end{{itemize}}
 """

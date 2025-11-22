@@ -7,11 +7,11 @@ class ModernCV(Template):
         self.folder = "moderncv"
 
     def build_header(self):
-        basic_info = self.resume["basic_info"]
-        name = split_string(basic_info.get("name"))
-        address = split_string(basic_info.get("address"), ",")
-        phone = basic_info.get("phone")
-        email = basic_info.get("email")
+        basic_info = self.resume.get("basic_info", {})
+        name = split_string(basic_info.get("name", ""))
+        address = split_string(basic_info.get("address", ""), ",")
+        phone = basic_info.get("phone", "")
+        email = basic_info.get("email", "")
 
         homepage = (
             f"\\homepage{{{basic_info.get('homepage')}}}"
@@ -65,11 +65,11 @@ class ModernCV(Template):
 \\item
 {{\\cventry
 {{{exp.get("duration","")}}}
-{{{exp.get("title")}}}
+{{{exp.get("title","")}}}
 {{\\textbf{{{exp.get("company","")}}}}}
 {{{exp.get("location","")}}}
 {{}}{{}}}}
-{self.create_details(exp.get("projects"))}
+{self.create_details(exp.get("projects",[]))}
 """
 
     def create_project(self, project):

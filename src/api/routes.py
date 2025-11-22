@@ -71,7 +71,7 @@ def register_routes(app):
         resume = request.json
         try:
             resume_id = add_resume(resume)
-        except:
+            return jsonify({"message": "added", "id": str(resume_id)}), 201
+        except Exception as e:
+            print(f"Error adding resume: {e}")
             return jsonify({"message": "couldn't insert"}), 422
-        finally:
-            return jsonify({"message": "added", "id": str(resume_id)})

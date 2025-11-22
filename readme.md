@@ -2,7 +2,7 @@
 
 This project is based on [Resume-Generator](https://github.com/cczhong11/Resume-Generator). It generates tailored resumes for different companies and job roles using LaTeX templates.
 
-The resume data is stored in a MongoDB database and can be edited using [resume-ui](https://github.com/achint227/resume/tree/main/).
+The resume data is stored in a database (SQLite or MongoDB) and can be edited using [resume-ui](https://github.com/achint227/resume/tree/main/).
 
 ## Project Structure
 
@@ -47,16 +47,30 @@ This will create a virtual environment and install all dependencies from `pyproj
 
 ## Configuration
 
-Create a `.env` file in the root directory with your MongoDB connection string:
-
-```
-DATABASE_URL=mongodb://your-connection-string
-```
-
-Copy from the example:
+Create a `.env` file in the root directory:
 
 ```bash
 cp .env.example .env
+```
+
+### Database Options
+
+The project auto-detects which database to use:
+
+**SQLite (default):**
+- No configuration needed
+- Database file created automatically at `resumes.db`
+- Perfect for local development
+
+**MongoDB:**
+Add `DATABASE_URL` to your `.env`:
+```env
+DATABASE_URL=mongodb://your-connection-string
+```
+
+Install the MongoDB dependency:
+```bash
+uv sync --extra mongodb
 ```
 
 ## Run
