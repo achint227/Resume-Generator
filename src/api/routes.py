@@ -1,16 +1,27 @@
 from flask import jsonify, request, send_file
 
 from src.database.operations import (add_resume, all_resumes, find_by_name,
-                                      find_by_resume_name)
+                                      find_by_resume_name, update_resume)
 from src.templates.moderncv import ModernCV
 from src.templates.template1 import Template1
 from src.templates.template2 import Template2
+from src.templates.template3 import Template3
 
 
 def register_routes(app):
     @app.route("/", methods=["GET"])
     def hello_word():
         return jsonify({"message": "Hello from Resume-Generator"})
+
+    @app.route("/templates", methods=["GET"])
+    def get_templates():
+        templates = [
+            {"id": "classic", "name": "Classic", "description": "Classic ATS-friendly resume template"},
+            {"id": "moderncv", "name": "Modern CV", "description": "Modern CV template with clean design"},
+            {"id": "resume", "name": "Resume", "description": "Professional resume template"},
+            {"id": "russel", "name": "Russell", "description": "Russell style resume template"}
+        ]
+        return jsonify({"templates": templates})
 
     @app.route("/resume", methods=["GET"], endpoint="f1")
     def get_all():
@@ -30,6 +41,8 @@ def register_routes(app):
             resume = Template1(id)
         elif template == "russel":
             resume = Template2(id)
+        elif template == "classic":
+            resume = Template3(id)
         else:
             return jsonify({"message": "Service unavailable"}), 503
         filename = resume.create_file(order)
@@ -45,6 +58,8 @@ def register_routes(app):
             resume = Template1(id)
         elif template == "russel":
             resume = Template2(id)
+        elif template == "classic":
+            resume = Template3(id)
         else:
             return jsonify({"message": "Service unavailable"}), 503
 
@@ -75,3 +90,16 @@ def register_routes(app):
         except Exception as e:
             print(f"Error adding resume: {e}")
             return jsonify({"message": "couldn't insert"}), 422
+
+    @app.route("/resume/<id>", methods=["PUT"])
+    def update_document(id):
+        resume = request.json
+        try:
+            updated = update_resume(id, resume)
+            if updated:
+                return jsonify({"message": "updated", "id": id}), 200
+            else:
+                return jsonify({"message": "resume not found"}), 404
+        except Exception as e:
+            print(f"Error updating resume: {e}")
+            return jsonify({"message": "couldn't update"}), 422

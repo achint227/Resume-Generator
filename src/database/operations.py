@@ -141,3 +141,24 @@ def add_resume(resume):
         conn.close()
         
         return resume_id
+
+
+def update_resume(id, resume):
+    """Update an existing resume"""
+    if USE_MONGODB:
+        document_id = ObjectId(id)
+        result = collection.update_one({"_id": document_id}, {"$set": resume})
+        return result.modified_count > 0
+    else:
+        conn = _sqlite_get_connection()
+        cursor = conn.cursor()
+        
+        name = resume.get("name")
+        data = json.dumps(resume)
+        
+        cursor.execute("UPDATE resumes SET name = ?, data = ? WHERE id = ?", (name, data, id))
+        conn.commit()
+        modified = cursor.rowcount > 0
+        conn.close()
+        
+        return modified
