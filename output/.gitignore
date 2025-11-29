@@ -1,0 +1,10 @@
+# Ignore generated files
+*.pdf
+*.tex
+*.aux
+*.log
+*.out
+*.synctex.gz
+
+# Keep this directory
+!.gitignore
