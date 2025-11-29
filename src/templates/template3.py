@@ -1,12 +1,46 @@
-from src.templates.base import Template, make_bold
+"""
+Template3 (Classic) - A classic ATS-friendly resume template.
+
+Uses standard LaTeX article class with custom commands for ATS compatibility.
+"""
+
+from typing import Any, Dict, List, Optional
+
+from src.repositories.base import PDFCacheRepository, ResumeRepository
+from src.templates.base import Template
+from src.templates.latex_utils import make_bold
 
 
 class Template3(Template):
-    def __init__(self, id, keywords=[]):
-        super().__init__(id, keywords)
-        self.folder = "assets"
+    """Classic resume template using standard article class.
+    
+    An ATS-friendly template designed for machine readability
+    while maintaining a professional appearance.
+    """
+    
+    def __init__(
+        self,
+        id: str,
+        keywords: Optional[List[str]] = None,
+        resume_repository: Optional[ResumeRepository] = None,
+        cache_repository: Optional[PDFCacheRepository] = None,
+    ) -> None:
+        """Initialize Template3.
+        
+        Args:
+            id: The unique identifier of the resume to load.
+            keywords: Additional keywords to highlight.
+            resume_repository: Repository for resume data access.
+            cache_repository: Repository for PDF cache access.
+        """
+        if keywords is None:
+            keywords = []
+        super().__init__(id, keywords, resume_repository, cache_repository)
+        self.latex_dir = "assets/latex"
+        self.template_name = "classic"
 
-    def build_header(self):
+    def build_header(self) -> str:
+        """Build the document header with personal information."""
         basic_info = self.resume.get("basic_info", {})
         name = basic_info.get("name", "")
         phone = basic_info.get("phone", "")
@@ -19,7 +53,7 @@ class Template3(Template):
         loc_parts = location.split(",") if location else []
         city = loc_parts[0].strip() if len(loc_parts) > 0 else ""
         state = loc_parts[1].strip() if len(loc_parts) > 1 else ""
-        
+
         github_link = f"\\href{{https://github.com/{github}}}{{\\underline{{github.com/{github}}}}}" if github else ""
         linkedin_link = f"\\href{{https://linkedin.com/in/{linkedin}}}{{\\underline{{linkedin.com/in/{linkedin}}}}}" if linkedin else ""
         
@@ -126,7 +160,9 @@ class Template3(Template):
 \\end{{center}}
 """
 
-    def new_section(self, section_name, content, summary=False):
+
+    def new_section(self, section_name: str, content: str, summary: bool = False) -> str:
+        """Create a new section in the resume."""
         if not content.strip():
             return ""
         if summary:
@@ -138,7 +174,8 @@ class Template3(Template):
 """
         return f"\\section{{{section_name}}}\n{content}"
 
-    def bullets_from_list(self, items):
+    def bullets_from_list(self, items: List[str]) -> str:
+        """Format a list of items as LaTeX bullet points using resumeItem."""
         if not items:
             return ""
         rs = []
@@ -148,7 +185,8 @@ class Template3(Template):
 {''.join(rs)}\\resumeItemListEnd
 """
 
-    def create_education(self, education):
+    def create_education(self, education: Dict[str, Any]) -> str:
+        """Create an education entry."""
         university = education.get("university", "")
         degree = education.get("degree", "")
         location = education.get("location", "")
@@ -161,10 +199,10 @@ class Template3(Template):
 {items}
 """
 
-    def create_project(self, project):
+    def create_project(self, project: Dict[str, Any]) -> str:
+        """Create a project entry."""
         title = project.get("title", "")
         tools = ", ".join(project.get("tools", []))
-        repo = project.get("repo", "")
         
         # Create project heading with tools
         heading = f"\\textbf{{{title}}}"
@@ -178,14 +216,15 @@ class Template3(Template):
 {details}
 """
 
-    def create_experience(self, exp):
-        company = exp.get("company", "")
-        title = exp.get("title", "")
-        location = exp.get("location", "")
-        duration = exp.get("duration", "")
+    def create_experience(self, experience: Dict[str, Any]) -> str:
+        """Create an experience entry."""
+        company = experience.get("company", "")
+        title = experience.get("title", "")
+        location = experience.get("location", "")
+        duration = experience.get("duration", "")
         
         # Handle projects within experience
-        projects = exp.get("projects", [])
+        projects = experience.get("projects", [])
         if projects:
             # Flatten all project details into a single bullet list
             all_details = []
@@ -201,7 +240,8 @@ class Template3(Template):
 {details}
 """
 
-    def build_resume(self, order):
+    def build_resume(self, order: str) -> str:
+        """Build the complete resume LaTeX document."""
         header = self.build_header()
         basic_info = self.resume.get("basic_info", {})
         summary_text = basic_info.get("summary", "") if isinstance(basic_info, dict) else ""
