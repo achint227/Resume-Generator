@@ -1,0 +1,15 @@
+.git
+.github
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+*.db
+.env
+assets/*.pdf
+assets/*.tex
+*.aux
+*.log
+*.synctex.gz

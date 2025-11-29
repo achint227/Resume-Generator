@@ -11,20 +11,35 @@ The resume data is stored in a database (SQLite or MongoDB) and can be edited us
 ├── app.py                  # Main Flask application entry point
 ├── src/
 │   ├── api/               # API routes and endpoints
-│   │   └── routes.py
-│   ├── database/          # Database operations
-│   │   └── operations.py
+│   │   ├── routes.py     # REST API endpoints
+│   │   ├── responses.py  # API response models
+│   │   ├── validation.py # Input validation
+│   │   └── swagger.py    # OpenAPI documentation
+│   ├── repositories/      # Repository pattern for data access
+│   │   ├── base.py       # Abstract repository interfaces
+│   │   ├── sqlite.py     # SQLite implementation
+│   │   └── mongodb.py    # MongoDB implementation
+│   ├── models/            # Data models
+│   │   └── resume.py     # Resume dataclasses
+│   ├── exceptions/        # Custom exception hierarchy
+│   │   └── __init__.py   # Domain-specific exceptions
 │   ├── templates/         # Resume template classes
 │   │   ├── base.py       # Base template class
+│   │   ├── latex_utils.py # Shared LaTeX utilities
 │   │   ├── moderncv.py   # ModernCV template
 │   │   ├── template1.py  # Resume template
-│   │   └── template2.py  # Russell template
-│   └── config.py         # Configuration
-├── assets/               # Generated PDF output
-├── moderncv/            # ModernCV LaTeX files
-├── resume/              # Resume LaTeX files
-├── russel/              # Russell LaTeX files
-└── requirements.txt     # Python dependencies
+│   │   ├── template2.py  # Russell template
+│   │   └── template3.py  # Classic template
+│   └── config.py         # Centralized configuration
+├── tests/                # Test suite
+│   ├── unit/            # Unit tests
+│   └── property/        # Property-based tests (Hypothesis)
+├── output/              # Generated PDF output
+├── assets/
+│   └── latex/           # LaTeX template resources
+│       ├── resume/      # Resume template (cls, fonts)
+│       └── russel/      # Russell template (cls, fonts)
+└── pyproject.toml       # Python dependencies and project config
 ```
 
 ## Install
